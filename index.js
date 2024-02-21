@@ -4,6 +4,9 @@ const jwt = require('jsonwebtoken')
 
 const {connection} = require('./config/db')
 const {UserModel} = require('./models/User.model')
+const { blogRouter } = require('./routes/blogs.routes')
+const { authentication } = require('./middlewares/authentication')
+
 
 const app = express()
 
@@ -59,6 +62,9 @@ app.post("/login", async (req,res)=> {
     })
     
 })
+
+//When ever blogs request are coming this sends them to blogs router
+app.use("/blogs", authentication, blogRouter)
 
 app.listen(7500, async()=> {
     try
