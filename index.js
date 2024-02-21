@@ -1,5 +1,9 @@
 const express = require('express')
+const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
+
 const {connection} = require('./config/db')
+const {UserModel} = require('./models/User.model')
 
 const app = express()
 
@@ -9,9 +13,51 @@ app.get("/", (req, res)=> {
     res.send("This is the Base API end point");
 })
 
-app.post("/signup", (req, res)=> {
+app.post("/signup", async (req, res)=> {
     const {name, email, password, age, phone_number} = req.body;
-    console.log(req.body);
+    bcrypt.hash(password, 8, async (err, hash) => {
+     const new_user = new UserModel ({
+        name, 
+        email,
+        password : hash,
+        age,
+        phone_number
+     })
+     try{
+    await new_user.save();
+    res.send({msg :"User inserted Successfully", new_user})
+     }
+     catch(err)
+     {
+        res.status(500).send("Something went wrong");
+     }
+    });
+})
+
+
+app.post("/login", async (req,res)=> {
+    const {email, password} = req.body;
+    const user = await UserModel.findOne({email});
+    const hashed_password = user?.password;
+    
+    if(!user)
+    {
+        res.send("Login again! Invalid Credentials")
+    }
+
+    bcrypt.compare(password, hashed_password, (err, result)=> {
+        if(result)
+        {
+            const token = jwt.sign({user_id :user._id}, 'shhhhh');
+            res.send({"message" : "login successfull", "token": token});
+            
+        }
+        else
+        {
+            res.send("Login again! Invalid Credentials")
+        }
+    })
+    
 })
 
 app.listen(7500, async()=> {
