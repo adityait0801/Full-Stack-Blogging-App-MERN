@@ -6,8 +6,9 @@ const { UserModel } = require('../models/User.model')
 
 const blogRouter = Router()
 
-blogRouter.get("/", (req, res)=> {
-    res.send("blogs");
+blogRouter.get("/", async (req, res)=> {
+    const blogs = await BlogModel.find();
+    res.send({blogs : blogs});
 })
 
 blogRouter.post("/create", async (req, res)=> {
@@ -24,9 +25,6 @@ blogRouter.post("/create", async (req, res)=> {
     res.send("Blog Created");
 })
 
-blogRouter.put("/edit/:blogID", (req, res)=> {
-    res.send("Blog Updated");
-})
 
 blogRouter.delete("/delete/:blogID", (req, res)=> {
     res.send("Blog Deleted");

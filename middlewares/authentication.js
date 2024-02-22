@@ -1,9 +1,8 @@
 const { BlogModel } = require("../models/Blog.model");
 const jwt = require('jsonwebtoken')
 
-
 const authentication = (req, res, next) => {
-    const token = req.headers.authorization.split(" ")[1]
+    const token = req.headers.authorization?.split(" ")[1]
 
     if(!token)
     {
@@ -20,7 +19,7 @@ const authentication = (req, res, next) => {
             {
                 const user_id = decoded.user_id;
                 // const user = await BlogModel.findOne({user_id})
-                 req.user_id = user_id; //here we will have info about the user
+                req.user_id = user_id; //here we will have info about the user
                 next();
             }
         })
