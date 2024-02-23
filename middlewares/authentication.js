@@ -6,7 +6,7 @@ const authentication = (req, res, next) => {
 
     if(!token)
     {
-        res.send("Please Login again");
+        res.send({msg : "Please Login again"});
     }
     else
     {

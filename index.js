@@ -1,6 +1,7 @@
 const express = require('express')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
+const cors = require('cors')
 
 const {connection} = require('./config/db')
 const {UserModel} = require('./models/User.model')
@@ -9,6 +10,8 @@ const { authentication } = require('./middlewares/authentication')
 
 
 const app = express()
+
+app.use(cors({ origin: '*' }));
 
 app.use(express.json())
 
